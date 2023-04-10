@@ -1,0 +1,12 @@
+{
+  "ExpandedNodes": [
+    "",
+    "\\Demo-Services",
+    "\\Demo-Services\\Exceptions",
+    "\\Demo-Services\\Services",
+    "\\Demo-Services\\Services\\AssetServices",
+    "\\Demo-Services\\Services\\HttpServices"
+  ],
+  "SelectedNode": "\\Demo-Services\\Services\\AssetServices\\TargetAssetService.cs",
+  "PreviewInSolutionExplorer": false
+}
