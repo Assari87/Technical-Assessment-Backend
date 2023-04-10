@@ -1,4 +1,4 @@
-# Swisscom SminGate Coding Challenge Backend
+# This is a Coding Challenge Backend
 
 ## Background
 A public JSON REST-API is available that returns a list of target assets from our postman mock server on the endpoint ```/targetAsset```. For the purposes of this task, this API will be referred to as the "TargetAsset-API".
