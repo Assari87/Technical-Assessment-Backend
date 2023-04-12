@@ -4,6 +4,6 @@ namespace Demo_Services.Services.AssetServices
 {
     public interface IAssetService
     {
-        Task<List<TargetAsset>> AnalyzeTargetAssetAsync();
+        Task<List<Asset>> AnalyzeTargetAssetAsync();
     }
 }

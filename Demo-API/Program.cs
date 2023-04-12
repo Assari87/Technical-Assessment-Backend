@@ -1,7 +1,8 @@
 using Demo_API.Controllers;
 using Demo_Models.Models;
 using Demo_Services.Services.AssetServices;
-using Demo_Services.Services.HttpServices;
+using Demo_Services.Services.DateTimeServices;
+using Demo_Services.Services.RemoteAssetServices;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,9 +18,10 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddHttpClient();
-builder.Services.AddSingleton<IHttpService, HttpService>();
-builder.Services.AddScoped<IAssetService, AssetService>();
 builder.Services.AddSingleton<SystemConfigs>(provider => builder.Configuration.GetSection("SystemConfigs").Get<SystemConfigs>());
+builder.Services.AddScoped<IDateTimeService, DateTimeService>();
+builder.Services.AddSingleton<IRemoteAssetService, RemoteAssetService>();
+builder.Services.AddScoped<IAssetService, AssetService>();
 
 var app = builder.Build();
 
