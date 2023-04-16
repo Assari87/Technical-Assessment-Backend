@@ -26,17 +26,19 @@ namespace Demo_Services.Services.AssetServices
 
         /// <summary>
         ///  Analyze Target Asset
-        ///This service adds the fields "isStartable" and "parentTargetAssetCount" to the received target assets, and return the enriched target assets as JSON
+        ///  This service adds the fields "isStartable" and "parentTargetAssetCount" to the received target assets, and return the enriched target assets as JSON
         /// </summary>
         /// <returns>List<Asset></returns>
         public async Task<List<Asset>> AnalyzeTargetAssetAsync()
         {
             var targetAssets = await remoteAssetService.GetRemoteAssetListAsync();
 
+            var nodeDic = targetAssets.Where(p => p != null).ToDictionary(p => p.Id, p => p.ParentId);
+
             foreach (var targetAsset in targetAssets.Where(p => p != null))
             {
                 targetAsset.IsStartable = IsStartable(targetAsset);
-                targetAsset.ParentTargetAssetCount = ParentTargetAssetCount(targetAsset, targetAssets);
+                targetAsset.ParentTargetAssetCount = ParentTargetAssetCount(targetAsset, nodeDic);
             }
 
             return targetAssets.ToList();
@@ -66,28 +68,20 @@ namespace Demo_Services.Services.AssetServices
         /// <param name="asset">Asset</param>
         /// <param name="assetList">List<Asset></param>
         /// <returns>bool</returns>
-        public int ParentTargetAssetCount(Asset asset, List<Asset> assetList)
+        public int ParentTargetAssetCount(Asset asset, Dictionary<int, int?> nodeDic)
         {
-            //It's possible that the 'Asset' or 'AssetList' parameters might be 'null' at some point during execution
-            //Currently, I've made the decision to return a value of 0 for the 'Count' property in this scenario. 
-            //I understand that this may not have been explicitly outlined in the original task description, 
-            //but I believe it's the best approach given the current circumstances
-            if (asset == null || assetList == null) return 0;
+            if (asset == null || nodeDic == null) return 0;
 
-            int count = 0;
+            int count = 1;
             var firstId = asset?.Id;
-
+            int? parentId = asset.ParentId;
+            if (parentId == null) return count;
             do
             {
-                asset = assetList.FirstOrDefault(ta => ta?.Id == asset.ParentId);
+                parentId = nodeDic.TryGetValue(parentId.Value, out var _parentId) ? _parentId : null;
                 count++;
             }
-            while (asset != null && asset.Id != firstId);
-            //asset.Id != firstId 
-            //I noticed a potential issue in the parent fields of the list where a circular reference may occur. 
-            //However, the task description does not provide a scenario for handling this situation. 
-            //After careful consideration, I have decided that the best course of action is to break the loop in the event of a 
-            //circular reference. This will ensure the program runs smoothly and avoids any potential errors or crashes.
+            while (parentId != null && parentId != firstId);
 
             return count;
         }
